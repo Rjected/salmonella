@@ -10,3 +10,15 @@
 [submodule "lib/v2-periphery"]
 	path = lib/v2-periphery
 	url = https://github.com/Uniswap/v2-periphery
+[submodule "contracts/lib/solmate"]
+	path = contracts/lib/solmate
+	url = https://github.com/rari-capital/solmate
+[submodule "contracts/lib/ds-test"]
+	path = contracts/lib/ds-test
+	url = https://github.com/dapphub/ds-test
+[submodule "contracts/lib/forge-std"]
+	path = contracts/lib/forge-std
+	url = https://github.com/brockelmore/forge-std
+[submodule "contracts/lib/v2-periphery"]
+	path = contracts/lib/v2-periphery
+	url = https://github.com/Uniswap/v2-periphery
