@@ -10,6 +10,3 @@
 [submodule "contracts/lib/v2-periphery"]
 	path = contracts/lib/v2-periphery
 	url = https://github.com/Uniswap/v2-periphery
-[submodule "contracts/lib/buidler"]
-	path = contracts/lib/buidler
-	url = https://github.com/nomiclabs/buidler

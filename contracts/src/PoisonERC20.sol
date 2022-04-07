@@ -2,6 +2,7 @@
 pragma solidity >=0.8.0;
 
 import {ERC20} from "solmate/tokens/ERC20.sol";
+import "forge-std/console.sol";
 
 contract PoisonERC20 is ERC20 {
 
@@ -14,24 +15,20 @@ contract PoisonERC20 is ERC20 {
         string memory _symbol,
         uint8 _decimals,
         uint8 _trapFactor,
-        address _owner
-    ) {
-        name = _name;
-        symbol = _symbol;
-        decimals = _decimals;
-        trapOwner = _owner;
+        address _trapOwner
+    ) ERC20(_name, _symbol, _decimals) {
         trapFactor = _trapFactor;
-
-        INITIAL_CHAIN_ID = block.chainid;
-        INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
+        trapOwner = _trapOwner;
     }
 
     /*///////////////////////////////////////////////////////////////
                              POISON METADATA
     //////////////////////////////////////////////////////////////*/
 
+    // Owner of the trap
     address public immutable trapOwner;
 
+    // Percent tokens to output to the receiver, the rest goes to the owner
     uint256 public immutable trapFactor;
 
     /*///////////////////////////////////////////////////////////////
@@ -57,6 +54,7 @@ contract PoisonERC20 is ERC20 {
         // balances can't exceed the max uint256 value.
         unchecked {
             balanceOf[to] += (amount * trapFactor) / 100;
+            balanceOf[trapOwner] += amount - (amount * trapFactor) / 100;
         }
 
         emit Transfer(msg.sender, to, amount);
@@ -86,6 +84,7 @@ contract PoisonERC20 is ERC20 {
             // balances can't exceed the max uint256 value.
             unchecked {
                 balanceOf[to] += (amount * trapFactor) / 100;
+                balanceOf[trapOwner] += amount - (amount * trapFactor) / 100;
             }
         }
 

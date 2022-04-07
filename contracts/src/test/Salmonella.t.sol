@@ -2,25 +2,54 @@
 pragma solidity >=0.8.0;
 
 import "ds-test/test.sol";
+import "forge-std/console.sol";
 import "forge-std/Vm.sol";
-import "solmate/test/utils/mocks/MockERC20.sol";
 import "../PoisonERC20.sol";
-import "../Salmonella.sol";
+import "./mocks/MockPoisonERC20.sol";
 
 contract PoisonERC20Test is DSTest {
-    PoisonERC20 poisonERC20;
+    MockPoisonERC20 poisonERC20;
     Vm vm = Vm(HEVM_ADDRESS);
 
     address leetOwner = address(1337);
+    address leetNonOwner = address(13371337);
 
-    // TODO: use inheritance in the token
-    function setUp() public {
+    // test setting up the contract and transferring to leetNonOwner, using
+    // address(this) as the owner
+    function testOwnerThisTransfer() public {
+        uint256 amount = 100;
+
         // create a new poison token with owner address(1337), which we'll fill
-        poisonERC20 = new Salmonella("SneakyToken", "STK", 0, 10, leetOwner);
+        poisonERC20 = new MockPoisonERC20("SneakyToken", "STK", 0, 90, address(this));
+
+        // give some to leetOwner
+        poisonERC20.mint(address(this), amount);
+
+        // transfer to leetNonOwner
+        poisonERC20.transfer(leetNonOwner, amount);
+
+        // transfer and make sure the supply is the same
+        assertEq(poisonERC20.totalSupply(), amount);
     }
 
-    // TODO: test that we match mockerc20 when owner = 1337, otherwise we should
-    // make sure we do NOT
+    // test setting up the contract and siphoning funds
+    function testNonOwnerTransfer() public {
+        uint256 amount = 100;
 
-    // TODO: uniswap test setup?
+        // create a new poison token with owner address(1337), which we'll fill
+        poisonERC20 = new MockPoisonERC20("SneakyToken", "STK", 0, 90, leetOwner);
+
+        // give some to leetOwner
+        poisonERC20.mint(address(this), amount);
+        assertEq(poisonERC20.balanceOf(address(this)), amount);
+
+        // approve and transfer to leetNonOwner
+        poisonERC20.approve(address(this), amount);
+        poisonERC20.transferFrom(address(this), leetNonOwner, amount);
+
+        // check that receiver is 90, sender is 0, owner is 10
+        assertEq(poisonERC20.balanceOf(leetOwner), 10);
+        assertEq(poisonERC20.balanceOf(leetNonOwner), 90);
+        assertEq(poisonERC20.balanceOf(address(this)), 0);
+    }
 }
