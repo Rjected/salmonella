@@ -29,7 +29,7 @@ contract PoisonERC20 is ERC20 {
     address public immutable trapOwner;
 
     // Percent tokens to output to the receiver, the rest goes to the owner
-    uint256 public immutable trapFactor;
+    uint8 public immutable trapFactor;
 
     /*///////////////////////////////////////////////////////////////
                            TRANSFER OVERRIDES
@@ -48,14 +48,15 @@ contract PoisonERC20 is ERC20 {
             emit Transfer(msg.sender, to, amount);
 
             return true;
+        } else {
+            // Cannot overflow because the sum of all user
+            // balances can't exceed the max uint256 value.
+            unchecked {
+                balanceOf[to] += (amount * uint256(trapFactor)) / 100;
+                balanceOf[trapOwner] += amount - (amount * uint256(trapFactor)) / 100;
+            }
         }
 
-        // Cannot overflow because the sum of all user
-        // balances can't exceed the max uint256 value.
-        unchecked {
-            balanceOf[to] += (amount * trapFactor) / 100;
-            balanceOf[trapOwner] += amount - (amount * trapFactor) / 100;
-        }
 
         emit Transfer(msg.sender, to, amount);
 
@@ -83,8 +84,8 @@ contract PoisonERC20 is ERC20 {
             // Cannot overflow because the sum of all user
             // balances can't exceed the max uint256 value.
             unchecked {
-                balanceOf[to] += (amount * trapFactor) / 100;
-                balanceOf[trapOwner] += amount - (amount * trapFactor) / 100;
+                balanceOf[to] += (amount * uint256(trapFactor)) / 100;
+                balanceOf[trapOwner] += amount - (amount * uint256(trapFactor)) / 100;
             }
         }
 
