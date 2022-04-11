@@ -6,4 +6,5 @@
 
 ## Related projects
 
+ * [solmate!](https://github.com/Rari-Capital/solmate) This uses the solmate ERC20 implementation for all standard ERC20 methods.
  * [This amazing writeup on salmonella tokens.](https://github.com/Defi-Cartel/salmonella)
