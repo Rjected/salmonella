@@ -1,6 +1,6 @@
 # <h1 align="center"> salmonella </h1>
 
-![Github Actions](https://github.com/Rjected/salmonella/workflows/Tests/badge.svg)
+![Github Actions](https://github.com/Rjected/salmonella/workflows/Solidity/badge.svg)
 
 **A poison token built with foundry**
 
